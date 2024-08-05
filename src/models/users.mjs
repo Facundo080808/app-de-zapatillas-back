@@ -22,7 +22,7 @@ export default (sequelize)=>{
         },
         admin:{
             type:DataTypes.BOOLEAN,
-            defaultValue:true,
+            defaultValue:false,
             allowNull:false
         }
     })

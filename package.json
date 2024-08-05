@@ -3,7 +3,7 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "start": "nodemon -L"
+    "start": "node ./index.mjs"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

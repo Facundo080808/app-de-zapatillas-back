@@ -10,6 +10,7 @@ const{ users , items} = db;
 const itemsRouter= express.Router();
 
 export async function subir() {
+    
     for (const shoe of shoes) {
         try {
               await items.create({
@@ -24,6 +25,8 @@ export async function subir() {
             console.error(error.message);
         }
     }
+
+    
 }
 
 itemsRouter.post("/", async (req, res) => {
