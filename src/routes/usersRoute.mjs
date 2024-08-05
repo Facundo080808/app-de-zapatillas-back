@@ -6,9 +6,20 @@ import jwt from "jsonwebtoken"
 
 const {SECRET} = process.env;
 
-const{ users , items} = db;
+const{ users } = db;
 const usersRouter = express.Router();
-
+export async function createAdmin() {
+    try {
+        return await users.create({
+        name:'Admin',
+        email:'admin@admin.com',
+        password:bcrypt.hashSync('12345678',3),
+        admin:true
+        
+    })} catch (error) {
+        console.error(error.message);
+    }
+}
 usersRouter.get("/",async (req, res) => {
     try {
         const response = await users.findAll();
@@ -21,7 +32,7 @@ usersRouter.post("/register", async(req , res)=>{
     try {
         const {name, email, password,admin} =req.body;
         const ifUser = await users.findOne({where:{email:email}});
-        if (ifUser) {res.status(409).send("email ya registrado");}
+        if (ifUser) {return res.status(409).send("email ya registrado");}
         else{
             const hashed = bcrypt.hashSync(password,3)
             const response =await users.create({name,email,password:hashed,admin});
@@ -37,15 +48,15 @@ usersRouter.post("/login", async (req,res)=>{
     const {name, email, password} =req.body;
     try {
         const ifUser = await users.findOne({where:{email:email}});
-        if (!ifUser) {res.status(409).send("email no registrado");}
+        if (!ifUser) {return res.status(409).send("email no registrado");}
         else{
             const validPass = await bcrypt.compare(password,ifUser.password);
             if (validPass) {
                 const token = jwt.sign({name:ifUser.name,email:ifUser.email,admin:ifUser.admin},SECRET,{expiresIn:"1h"});
                 const { password, ...publicUser } = ifUser.toJSON();
-                res.cookie("access_token",token,{httpOnly:true,sameSite:"strict",maxAge: 1000 * 60 *60}).send(publicUser);
+                return res.cookie("access_token",token,{httpOnly:true,sameSite:"strict",maxAge: 1000 * 60 *60}).send(publicUser);
             }else{
-                res.status(409).send("contrseña invalida")
+               return res.status(409).send("contrseña invalida")
             }
         }
     } catch (error) {
@@ -62,11 +73,12 @@ usersRouter.get("/protected" ,async(req, res)=>{
         console.log(data);
       return  res.status(200).send(data);
     } catch (error) {
-       return res.send(500).send(error.message)
+       return res.status(500).send(error.message)
     }
 })
 
 usersRouter.post("/logout",async (req, res)=>{
+    
    return res.clearCookie("access_token").send("funciono eskide")
 })
 export default usersRouter;
