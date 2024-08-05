@@ -3,7 +3,9 @@
   "main": "index.mjs",
   "type": "module",
   "scripts": {
-    "start": "node ./index.mjs"
+    "start": "node ./index.mjs",
+    "build": "echo 'No build step defined. Modify package.json as needed.'",
+    "dev": "nodemon ./index.mjs"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
