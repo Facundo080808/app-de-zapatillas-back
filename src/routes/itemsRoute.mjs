@@ -1,6 +1,7 @@
 import express from "express";
 import db from "../db.mjs"
 import shoes from "../shoes.mjs"
+import { where } from "sequelize";
 
 
 
@@ -48,7 +49,17 @@ itemsRouter.get("/",async(req,res)=>{
         res.status(500).send(error.message);
     }
 });
-
+itemsRouter.get("/:id" , async (req,res)=>{
+    try {
+        const {id} = req.params;
+        const response = await items.findOne({where:{id : id}})
+        
+        
+        res.status(200).send(response)
+    } catch (error) {
+        res.status(500).send(error.message)
+    }
+})
 itemsRouter.delete("/:id" ,async (req,res)=>{
     const {id} = req.params;
 try {
