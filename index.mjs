@@ -4,10 +4,10 @@ import { subir } from "./src/routes/itemsRoute.mjs";
 import { createAdmin } from "./src/routes/usersRoute.mjs";
 
 
-const {PORT} = process.env;
+const port = process.env.PORT || "1000"
 const { conn } = con;
 conn.sync({ force: true }).then(() => {
-  server.listen(PORT, () => {
+  server.listen(port, () => {
     subir();
     createAdmin();
     console.log('Server running at http://localhost:1000/');

@@ -33,6 +33,10 @@ export default (sequelize)=>{
         price:{
          type:DataTypes.STRING,
          allowNull:false   
+        },
+        stock:{
+            type:DataTypes.INTEGER,
+            defaultValue:1,
         }
     })
 }

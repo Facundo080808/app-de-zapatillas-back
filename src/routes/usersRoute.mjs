@@ -11,8 +11,8 @@ const usersRouter = express.Router();
 export async function createAdmin() {
     try {
         return await users.create({
-        name:'Admin',
-        email:'admin@admin.com',
+        name:'julieta',
+        email:'juli@admin.com',
         password:bcrypt.hashSync('12345678',3),
         admin:true
         
@@ -28,6 +28,9 @@ usersRouter.get("/",async (req, res) => {
         res.status(500).send(error.message);
     }
 });
+usersRouter.post('/preferencia', (req,res)=>{
+    res.status(200).send("hola" + req.body.title)
+})
 usersRouter.post("/register", async(req , res)=>{
     try {
         const {name, email, password,admin} =req.body;
@@ -52,8 +55,8 @@ usersRouter.post("/login", async (req,res)=>{
         else{
             const validPass = await bcrypt.compare(password,ifUser.password);
             if (validPass) {
-                const token = jwt.sign({name:ifUser.name,email:ifUser.email,admin:ifUser.admin},SECRET,{expiresIn:"1h"});
-                const { password, ...publicUser } = ifUser.toJSON();
+                const token = jwt.sign({id :ifUser.id ,name:ifUser.name,email:ifUser.email,admin:ifUser.admin},SECRET,{expiresIn:"1h"});
+                const { password, ...publicUser } = ifUser.toJSON();    
                 return res.cookie("access_token",token,{httpOnly:true,sameSite:"strict",maxAge: 1000 * 60 *60}).send(publicUser);
             }else{
                return res.status(409).send("contrseña invalida")
@@ -78,8 +81,7 @@ usersRouter.get("/protected" ,async(req, res)=>{
 })
 
 usersRouter.post("/logout",async (req, res)=>{
-    
-   return res.clearCookie("access_token").send("funciono eskide")
+   return res.clearCookie("access_token").send("Sesion cerrada")
 })
 export default usersRouter;
 
