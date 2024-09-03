@@ -6,7 +6,7 @@ import { createAdmin } from "./src/routes/usersRoute.mjs";
 
 const port = process.env.PORT || "1000"
 const { conn } = con;
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   server.listen(port, () => {
     subir();
     createAdmin();

@@ -7,7 +7,7 @@ import { where } from "sequelize";
 
 
 
-const{ users , items} = db;
+const{ orders , items} = db;
 const itemsRouter= express.Router();
 
 export async function subir() {
@@ -18,9 +18,10 @@ export async function subir() {
                 brand:shoe.marca,
                 model:shoe.modelo,
                 img:shoe.extra,
-                size:undefined,
-                colors:undefined,
-                price:shoe.precio
+                size:shoe.talles,
+                colors:shoe.colores,
+                price:shoe.precio,
+                stock:4
              })
         } catch (error) {
             console.error(error.message);
@@ -43,7 +44,7 @@ itemsRouter.post("/", async (req, res) => {
 
 itemsRouter.get("/",async(req,res)=>{
     try {
-        const response = await items.findAll();
+        const response = await items.findAll({include:{model:orders}});
         res.status(200).json(response);
     } catch (error) {
         res.status(500).send(error.message);
@@ -75,13 +76,13 @@ try {
 itemsRouter.put("/:id", async (req,res)=>{
     const {id} = req.params;
     const itemgeted = await items.findByPk(id);
-    const {brand,model,img,size,colors} = req.body;
+    const {brand,model,img,size,colors,price,stock} = req.body;
     try {
         if (!itemgeted) {
             return res.status(404).json({ message: "Item not found" });
         }
         else{
-            const response = await itemgeted.update({brand,model,img,size,colors});
+            const response = await itemgeted.update({brand,model,img,size,colors,price,stock});
             res.status(200).json(response);
         }
     } catch (error) {

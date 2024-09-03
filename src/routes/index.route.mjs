@@ -2,12 +2,14 @@ import { Router } from "express";
 import usersRouter from "./usersRoute.mjs";
 import itemsRouter from "./itemsRoute.mjs";
 import {Preference , MercadoPagoConfig} from 'mercadopago';
+import { ordersRouter } from "./orders.route.mjs";
 const router = Router();
 
 
 
 router.use("/users", usersRouter);
 router.use("/items", itemsRouter);
+router.use('/orders',ordersRouter )
 router.post("/mercadopago", async(req,res)=>{
     try {
         
@@ -33,7 +35,7 @@ router.post("/mercadopago", async(req,res)=>{
         const preference = new Preference(client)   ;
         const response =await preference.create({body});
       
-        res.status(200).json({id:response.id}) 
+        res.status(200).json({id:response.id,url:response.init_point}) 
     } catch (error) {
         res.status(500).send(error.message);
     }

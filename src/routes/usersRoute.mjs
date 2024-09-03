@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken"
 const {SECRET} = process.env;
 
 const{ users } = db;
+const { orders} = db;
 const usersRouter = express.Router();
 export async function createAdmin() {
     try {
@@ -22,7 +23,7 @@ export async function createAdmin() {
 }
 usersRouter.get("/",async (req, res) => {
     try {
-        const response = await users.findAll();
+        const response = await users.findAll({include:{model :orders },attributes: { exclude: ['password'] }});
         res.status(200).json(response);
     } catch (error) {
         res.status(500).send(error.message);

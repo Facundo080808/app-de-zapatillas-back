@@ -3,7 +3,8 @@ import dotenv from "dotenv"
 //require('dotenv').config();
 import { Sequelize} from 'sequelize';
 import Users from "./models/users.mjs";
-import Items from "./models/items.mjs"
+import Items from "./models/items.mjs";
+import Orders from "./models/order.mjs";
 //import fs from 'fs';
 //import path from 'path"
 
@@ -21,9 +22,22 @@ const sequelize = new Sequelize(`postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}
   logging: false, 
   native: false, 
 });*/
+
 Items(sequelize);
 Users(sequelize);
-const { users ,items} = sequelize.models;
+Orders(sequelize);
+const { users ,items ,orders} = sequelize.models;
+users.hasMany(orders,{
+  foreignKey: 'usersId',
+  sourceKey:'id'
+})
+orders.belongsTo(users,{
+  foreignKey:'usersId',
+  tergetKey:'id'
+})
+items.belongsToMany(orders,{through:'items_orders'});
+orders.belongsToMany(items,{through:'items_orders'});
+
 
 export default {
   ...sequelize.models,
